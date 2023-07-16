@@ -1,6 +1,8 @@
 package Java.Jetty;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -11,6 +13,9 @@ import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;
 import org.eclipse.jetty.http.HttpMethod;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 public class MyServlet extends HttpServlet {
 
@@ -37,6 +42,26 @@ public class MyServlet extends HttpServlet {
         ContentResponse contentRes = sendRequest(uri, HttpMethod.POST, header);
 
         responseServlet(resp, contentRes);
+
+        ///////////////////////////////////////////
+
+        String path = req.getPathInfo();
+        String command = path.split("/")[1];    // ex) 127.0.0.1:8080/command
+
+        // 요청 Body 추출
+        BufferedReader br = new BufferedReader(new InputStreamReader(req.getInputStream()));
+        String readLine;
+        StringBuffer sb = new StringBuffer();
+        while((readLine = br.readLine()) != null) {
+            sb.append(readLine);
+        }
+        Gson gson = new Gson();
+
+        JsonObject bodyJson = null;
+        if (sb.toString().equals("null") == false) {
+            bodyJson = gson.fromJson(sb.toString(), JsonObject.class);
+        }
+
     }
     
     protected void responseServlet(HttpServletResponse res, ContentResponse contentRes) throws IOException {
