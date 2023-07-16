@@ -3,6 +3,7 @@ package Java.Jetty;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Objects;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -62,6 +63,12 @@ public class MyServlet extends HttpServlet {
             bodyJson = gson.fromJson(sb.toString(), JsonObject.class);
         }
 
+        JsonObject resJson = null;
+
+        if (Objects.isNull(resJson) == false) {
+            resp.getWriter().write(resJson.toString());
+            resp.flushBuffer();
+        }
     }
     
     protected void responseServlet(HttpServletResponse res, ContentResponse contentRes) throws IOException {
